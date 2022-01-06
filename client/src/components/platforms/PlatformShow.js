@@ -5,18 +5,20 @@ import Moment from 'react-moment';
 import { Button } from 'react-bootstrap';
 import { PlatformConsumer } from '../../providers/PlatformProvider';
 import PlatformForm from './PlatformForm';
+import Games from '../games/Games';
 
-const PlatformShow = ({ updatePlatform, }) => {
+const PlatformShow = ({ updatePlatform, deletePlatform }) => {
   const params = useParams();
   const [platform, setPlatform] = useState({ name: '', version: '', bought: '' })
   const [editing, setEdit] = useState(false)
+
   useEffect( () => {
     axios.get(`/api/platforms/${params.platformId}`)
       .then( res => setPlatform(res.data))
       .catch( err => console.log(err))
   }, [])
 
-  const { name, version, bought } = platform
+  const { name, version, bought, id } = platform
   return (
     <>
       { editing ? 
@@ -37,10 +39,21 @@ const PlatformShow = ({ updatePlatform, }) => {
               {bought}
             </Moment> 
           </h5>
-          <Button variant="warning" onClick={() => setEdit(true)}>Edit</Button>
-          <Button variant="danger">Delete</Button>
+          <Button 
+            variant="warning" 
+            onClick={() => setEdit(true)}
+          >
+            Edit
+          </Button>
+          <Button 
+            variant="danger"
+            onClick={() => deletePlatform(id)}
+          >
+            Delete
+          </Button>
         </>
       }
+      <Games platformId={id} />
     </>
   )
 }
